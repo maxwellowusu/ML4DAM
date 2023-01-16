@@ -19,7 +19,7 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-from dataset_preparation import utils_funcs
+from accra.dataset_preparation import utils_funcs
 
 
 #--------------- Raster processing ---------------
