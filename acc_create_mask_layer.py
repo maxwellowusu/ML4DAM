@@ -58,8 +58,15 @@ utils_funcs.TiffToVRT(In_Raster_list, Outfile,)
 # STEP 3
 # Clip raster using polygon Tiles
 polygons = sorted(glob('D:/GWU/ML4DAM/data/accra/temp/ClipPolygon/*.shp'))
-VRT = f'D:/GWU/ML4DAM/data/accra/acc_spfea.vrt'
-outfile = 'D:/GWU/ML4DAM/data/accra/final/spfea/'
+# print(polygons)
+# VRT = f'D:/GWU/ML4DAM/data/accra/acc_spfea.vrt'
+# outfile = 'D:/GWU/ML4DAM/data/accra/final/spfea/'
+
+# # RBG
+
+VRT = f'D:/GWU/ML4DAM/data/accra/acc_raw_image_arathi/acc_bgrn.tif'
+outfile = 'D:/GWU/ML4DAM/data/accra/final/rgb/'
+
 # print(polygons)
 
 for polygon in polygons:
@@ -68,8 +75,8 @@ for polygon in polygons:
     # add output file name
     head, tail = os.path.split(polygon)
     name=tail[:-4]
-    # print(name)
-    command = f'gdalwarp -dstnodata -9999 -ts 95 95 -cutline {polygon} -crop_to_cutline -of Gtiff {VRT} "{outfile}/{name}.tif"'
+    print(name)
+    command = f'gdalwarp -dstnodata -9999 -ts 215 215 -cutline {polygon} -crop_to_cutline -of Gtiff {VRT} "{outfile}/{name}.tif"'
     # command = f'gdalwarp -dstnodata -9999 -cutline {polygon} -crop_to_cutline -of Gtiff {VRT} "{outfile}/{name}.tif"'
 
     Popen(command, shell=True)
@@ -128,7 +135,10 @@ utils_funcs.ClipVector(in_vector=input_shp, clip=polygons, outfile=outfile, pref
 # %%
 
 
+
 # zip polygon and raster in to a list of tuple 
+RasterTiles = sorted(glob("D:/GWU/ML4DAM/data/accra/final/spfea/*.tif"))
+polygons = sorted(glob('D:/GWU/ML4DAM/data/accra/temp/IS_Tiles/*.shp'))
 shp_rast = zip (polygons, RasterTiles)
 lst = list(shp_rast)
 
@@ -151,7 +161,7 @@ def rasterize_me(in_shp, in_raster, outfile):
                             crs=src.crs)
             dst_height = src.height
             dst_width = src.width
-            shapes = ((geom,value) for geom, value in zip(df.geometry, df.CID))
+            shapes = ((geom,value) for geom, value in zip(df.geometry, df.ids))
             # print(shapes)
             burned = features.rasterize(shapes=shapes, out_shape=(dst_height, dst_width),fill=0, transform=src.transform)
             plt.imshow(burned) 
